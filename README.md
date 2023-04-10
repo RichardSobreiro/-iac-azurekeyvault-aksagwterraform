@@ -107,8 +107,36 @@ resource "azurerm_key_vault_certificate" "example" {
 
 ## Azure DevOps Pipeline
 
+We will are using the Azure DevOps Classic Editor for the Build and Release Pipelines.
+
 ### Pre-Requisites
 
-### X - Azure DevOps Service Connection
+- [Azure DevOps Service Connection to Azure Portal](https://learn.microsoft.com/en-us/azure/devops/pipelines/library/connect-to-azure?view=azure-devops)
 
-When authenticated with a service principal, azuread_group data source requires one of the following application roles: Group.Read.All or Directory.Read.All
+- When authenticated with a service principal, the app registration in Azure Active Directory requires one of the following application roles: Group.Read.All or Directory.Read.All
+
+<img src="./ServiceConnectionServicePrincipalAPIPermissions.png" alt= 'Service Connection Service Principal API Permissions'>
+
+### Build Pipeline
+
+The build pipeline just publishes the terraform scripts. You can visit this pipeline using the [this url](https://dev.azure.com/richardsobreiro/Personal%20Profile/_build?definitionId=25).
+
+<img src="./BuildPipeline.png" alt= 'Build Pipeline'>
+
+### Release Pipeline
+
+The first step we need to do is install the terraform on the Agent and also execute the terraform init command:
+
+<img src="./ReleasePipeline-Init.png" alt= 'Release Pipeline Init'>
+
+The storage account information also needs to be provided. The terraform state will be stored there:
+
+<img src="./ReleasePipeline-Init-Detail.png" alt= 'Release Pipeline Init Detail'>
+
+Next, it's time to setup the plan task. The extra parameters here refer to the (Azure Subscription Service Connection)[https://learn.microsoft.com/en-us/azure/devops/pipelines/library/connect-to-azure?view=azure-devops]:
+
+<img src="./ReleasePipeline-Plan.png" alt= 'Release Pipeline Plan'>
+
+And finally, we setup the apply task:
+
+<img src="./ReleasePipeline-Apply.png" alt= 'Release Pipeline Apply'>

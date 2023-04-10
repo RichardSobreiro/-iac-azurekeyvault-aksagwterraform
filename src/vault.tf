@@ -133,13 +133,13 @@ resource "azurerm_key_vault" "kv" {
 }
 
 resource "azurerm_key_vault_secret" "akssshpublickey" {
-  name         = "aks-ssh-public-key"
-  value        = "aks-ssh-public-key"
+  name         = "ssh-public-key"
+  value        = "ssh-public-key"
   key_vault_id = azurerm_key_vault.kv.id
 }
 
-resource "azurerm_key_vault_certificate" "example" {
-  name         = "sslcertificate"
+resource "azurerm_key_vault_certificate" "sslcert" {
+  name         = "x509selfsigned"
   key_vault_id = azurerm_key_vault.kv.id
 
   certificate {
