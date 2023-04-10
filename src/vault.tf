@@ -136,6 +136,8 @@ resource "azurerm_key_vault_secret" "akssshpublickey" {
   name         = "ssh-public-key"
   value        = "ssh-public-key"
   key_vault_id = azurerm_key_vault.kv.id
+
+  depends_on = [azurerm_key_vault.kv]
 }
 
 resource "azurerm_key_vault_certificate" "sslcert" {
@@ -146,4 +148,6 @@ resource "azurerm_key_vault_certificate" "sslcert" {
     contents = filebase64("domain.pfx")
     password = ""
   }
+
+  depends_on = [azurerm_key_vault.kv]
 }
