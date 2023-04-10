@@ -140,3 +140,13 @@ Next, it's time to setup the plan task. The extra parameters here refer to the (
 And finally, we setup the apply task:
 
 <img src="./ReleasePipeline-Apply.png" alt= 'Release Pipeline Apply'>
+
+Now we are ready to execute the release pipeline:
+
+<img src="./Release-Pipeline-Results.png" alt= 'Release Pipeline Results'>
+
+And following, the X.509 certificate stored in the created Key Vault result:
+
+<img src="./Azure Portal Certificate.png" alt= 'Azure Portal Certificate'>
+
+[You can also visit this release pipeline clicking here.](https://dev.azure.com/richardsobreiro/Personal%20Profile/_releaseProgress?_a=release-environment-logs&releaseId=12&environmentId=12).
