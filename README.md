@@ -25,6 +25,39 @@ A Key Vault access policy determines whether a given security principal, namely 
 
 <img src="./AzureADGroup.png" alt= 'Azure AD Group'>
 
+### Create SSL Certificates
+
+winpty openssl genrsa -des3 -out domain.key 2048
+
+- Passphrase: testaks
+
+winpty openssl req -key domain.key -new -out domain.csr
+
+- FQDN: ric-eastus-all-k8s.eastus.cloudapp.azure.com
+
+winpty openssl x509 -signkey domain.key -in domain.csr -req -days 365 -out domain.crt
+
+winpty openssl pkcs12 -inkey domain.key -in domain.crt -export -out domain.pfx
+
+### Create SSH keys
+
+ssh-keygen \
+-t rsa \
+-b 4096 \
+-C "100-days-linux-vm" \
+-f ~/.ssh/100-days-linux-vm \
+-N "$SSH_KEY_PASSWORD"
+
+SSH_PUBLIC_KEY=$(cat ~/.ssh/100-days-linux-vm.pub) && \
+SSH_PRIVATE_KEY=$(cat ~/.ssh/100-days-linux-vm) && \
+rm -rf ~/.ssh/100-days-linux-vm\*
+
+az keyvault secret set \
+--name "ssh-public-key" \
+--vault-name "ric-eastus-all-kv-vault" \
+--value "$SSH_PUBLIC_KEY" \
+--output none
+
 ## Terraform Code
 
 The terraform is quite simple and straightforward. Following, we will discuss the main files an lines of code.
@@ -89,13 +122,13 @@ As an example, we also create one secret and one certificate inside the newly cr
 
 ```
 resource "azurerm_key_vault_secret" "akssshpublickey" {
-  name         = "aks-ssh-public-key"
-  value        = "aks-ssh-public-key"
+  name         = "ssh-public-key"
+  value        = "ssh-public-key"
   key_vault_id = azurerm_key_vault.kv.id
 }
 
 resource "azurerm_key_vault_certificate" "example" {
-  name         = "sslcertificate"
+  name         = "x509selfsigned"
   key_vault_id = azurerm_key_vault.kv.id
 
   certificate {
